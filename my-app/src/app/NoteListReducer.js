@@ -1,13 +1,13 @@
 
 
-const EDIT_NOTE = 'EDIT_NOTE';
 const ARCHIVE_NOTE = 'ARCHIVE_NOTE';
 const SHOW_ARCHIVE_NOTE = 'SHOW_ARCHIVE_NOTE';
 const HIDE_ARCHIVE_NOTE = 'HIDE_ARCHIVE_NOTE';
 const UNARCHIVE_NOTE = 'UNARCHIVE_NOTE';
 const DELETE_NOTE = 'DELETE_NOTE';
 const ADD_NOTE = 'ADD_NOTE';
-
+const TOGGLE_DISABLED = 'TOGGLE_DISABLED';
+const UPDATE_INPUT_TEXT = 'UPDATE_INPUT_TEXT';
 
 
 let initialState = {
@@ -119,6 +119,7 @@ const NoteListReducer = (state = initialState, action) => {
       
       break;
     }
+    
     case SHOW_ARCHIVE_NOTE: {
       state.showArchived = true;
       
@@ -129,28 +130,34 @@ const NoteListReducer = (state = initialState, action) => {
       
       break;
     }
-    case EDIT_NOTE: {
-      let inputEditedValue = '';
+    case TOGGLE_DISABLED: {
+      return {...state, listData: state.listData.map( listItem => {
+        if(listItem.id === action.noteId) {
+          let disabledFlag = listItem.isEditable ? false : true;
+          return {...listItem, isEditable: disabledFlag}
+        }
+        return listItem
+      })}
+    }
+    case UPDATE_INPUT_TEXT: {
+     
 
-      const notesList = state.listData.map((el) => {
+      return{...state, listData: state.listData.map((el) => {
         if (el.id === action.noteId) {
-          if (action.editedField.schedule && el.schedule.length <= 1) {
-            inputEditedValue = { schedule: [...el.schedule] };
-            inputEditedValue.schedule.push(action.editedField.schedule);
-          } else if (action.editedField.schedule) {
-            inputEditedValue = action.editedField.schedule;
+          if (action.category === 'schedule' && el.schedule.length <= 1) {
+            return {...el, schedule: [...el.schedule, action.editedValue]}
+          } else if (action.category === 'schedule') {
+            return {...el, schedule: action.editedValue}
           }
-          return { ...el, ...inputEditedValue };
+          if(action.category === 'category') {
+            
+          }
+          return { ...el, [action.category]: action.editedValue };
         }
         return el;
-      });
-
-      state.listData = [...notesList];
-      
-      break;
+      })}
     }
     case DELETE_NOTE: {
-      console.log('del')
       return {...state, listData: state.listData.filter((el) => el.id !== action.noteId)};
     }
     case ADD_NOTE: {
@@ -192,5 +199,17 @@ export const getInitialValues = () => (state.listData);
 export const deleteNoteAC = (noteId) => {
   return {type: DELETE_NOTE, noteId: noteId}
 } 
+
+export const toggleDisabledAC = (noteId) => {
+  return {type: TOGGLE_DISABLED, noteId: noteId}
+} 
+
+export const updateInputTextAC = (editedValue, category, noteId) => {
+  return {type: UPDATE_INPUT_TEXT, 
+          noteId: noteId,
+          category: category,
+          editedValue: editedValue
+          }
+}
 
 export default NoteListReducer

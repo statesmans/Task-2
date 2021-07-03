@@ -1,14 +1,13 @@
 import React from 'react';
-import NoteBlockContainer from './app/components/notes/NoteBlock';
-import { StatisticsContainer } from './app/components/statistics/StatisticsContainer';
+import NoteBlock from './app/components/notes/NoteBlock';
+import StatisticsBlock from './app/components/statistics/StatisticsBlock';
 
 function App() {
-  console.log('render')
   return (
     <div className="App">
       <header className="App-header">
-        <NoteBlockContainer />
-        <StatisticsContainer/>
+        <NoteBlock />
+        <StatisticsBlock/>
       </header>
     </div>
   );

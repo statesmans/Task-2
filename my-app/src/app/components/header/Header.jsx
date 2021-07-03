@@ -3,9 +3,10 @@ import ArchiveIcon from '../icons/ArchiveIcon';
 import DeleteIcon from '../icons/DeleteIcon';
 
 const ListHeader = (props) => {
+  console.log(props.tableType)
   return (
     <div>
-      { props.tableType === 'noteList' ? <div className={s.table__header}>
+      { props.tableType === 'notes' ? <div className={s.table__header}>
                                                 <div className={s.notes__header}>
                                                   <div className={s.header__item}>Name</div>
                                                   <div className={s.header__item}>Created</div>
@@ -17,13 +18,12 @@ const ListHeader = (props) => {
                                                     <ArchiveIcon/>
                                                     <DeleteIcon/>
                                                 </div>
-                                            </div> : 
-                                              props.tableType === 'statisticList'?  
-                                            <div className={s.statistics__header}>
+                                            </div> 
+                                            : <div className={s.statistics__header}>
                                               <div className={s.header__item}>Note category</div>
                                               <div className={s.header__item}>Active</div>
                                               <div className={s.header__item}>Archived</div>
-                                            </div> : null } 
+                                            </div>} 
     </div>
   )
 }

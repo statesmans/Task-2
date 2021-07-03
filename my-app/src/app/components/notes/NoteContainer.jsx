@@ -1,40 +1,10 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import imagePaths from '../../constants';
-import { deleteNoteAC } from '../../NoteListReducer';
-import ListItem from '../listItem/ListItem'
+import { deleteNoteAC, toggleDisabledAC, updateInputTextAC } from '../../NoteListReducer';
 import NotesList from './NotesList';
 
-class NoteContainer extends React.Component {
-constructor(props) {
-  super(props);
-  this.notesList = [];
-}
-componentWillMount() {
-  console.log(this.props)
-   this.notesList = this.props.filteredListData.map(listItem => {
-     console.log() 
-    return <ListItem  listType="notes"
-                      id={listItem.id}
-                      createData={listItem.createData}
-                      category={listItem.category}
-                      content={listItem.content}
-                      schedule={listItem.schedule}
-                      deleteNote={this.props.deleteNote}
-                      name={listItem.name}
-                      key={listItem.id}
-                      disabled={listItem.isEditable ? false : true}/>
-  })
-}
-
-  render() {
-     return(<NotesList images={this.props.images}
-                        notesList={this.notesList}/>)
-  }
-}
 
 let mapStateToProps = (state) => {
-  console.log(state)
   let filteredListData = []
 
   state.listData.forEach((listItem) => {
@@ -48,7 +18,7 @@ let mapStateToProps = (state) => {
 
   return ({
     filteredListData: filteredListData,
-    images: imagePaths
+    images: imagePaths,
   })
 }
 
@@ -56,8 +26,14 @@ let mapDispatchToProps = (dispatch) => {
   return {
     deleteNote: (noteId) => {
       dispatch(deleteNoteAC(noteId))
+    },
+    toggleDisabled: (noteId) => {
+      dispatch(toggleDisabledAC(noteId))
+    },
+    updateInputText: (editedValue, category, noteId) => {
+      dispatch(updateInputTextAC(editedValue, category, noteId))
     }
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoteContainer)
+export const NoteContainer = connect(mapStateToProps, mapDispatchToProps)(NotesList)

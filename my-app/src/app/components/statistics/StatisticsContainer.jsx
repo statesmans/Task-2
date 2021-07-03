@@ -6,58 +6,52 @@ import ListItem from '../listItem/ListItem'
 
 
 let mapStateToProps = (state) => {
+  const getUniqCategories = () => {
+    // Get the all categories and filter for take only uniq categories
+    let categories = Array.from( new Set(state.listData.map(el => el.category)))
+    return categories
+  }
   const computeCategories = () => {
     let result = {}
+    let categories = getUniqCategories()
     let archivedNoteCount = 0;
     let activeNoteCount = 0;
-      state.categoriesList.forEach((category) => {
-        state.listData.forEach((listEl) => {
-          if (listEl.type === category) {
 
-            if (listEl.isArchived === true) {
-              archivedNoteCount = archivedNoteCount + 1;
-            } else {
-              activeNoteCount = activeNoteCount + 1;
-            }
+    categories.forEach((category) => {
+      state.listData.forEach((listEl) => {
+        if (listEl.category === category) {
+          if (listEl.isArchived) {
+            archivedNoteCount++;
+          } else {
+            activeNoteCount++;
           }
-        })
-        result[category] = {
-          active: activeNoteCount,
-          archive: archivedNoteCount
         }
-        activeNoteCount = 0;
-        archivedNoteCount = 0;
+      })
+      result[category] = {
+        active: activeNoteCount,
+        archive: archivedNoteCount
+      }
+      activeNoteCount = 0;
+      archivedNoteCount = 0;
     })
     return result
   }
 
-  const getCategoryName = (category) => {
-    const categoryEl = state.listData.filter(el => el.type === category)
-    if(categoryEl.length !== 0) {
-      return categoryEl[0].category
-    }
-    
-  }
 
   const generateCategoriesList = () => {
     const computedCategories = computeCategories();
     let categoriesList = [];
     let count = 0;
     for (let category in computedCategories) {
-      const categoryName = getCategoryName(category);
-      
-      if(categoryName) {
         categoriesList.push(<ListItem listType='categories'
                                     active={computedCategories[category].active}
                                     archive={computedCategories[category].archive}
                                     type={category}
-                                    name={categoryName}
+                                    name={category}
                                     images={imagePaths}
                                     key={count}/>)
       count++
-      }
     }
-    
     return categoriesList
   }
 
@@ -67,12 +61,6 @@ let mapStateToProps = (state) => {
   })
 }
 
-let mapDispatchToProps = (dispatch) => {
-  return {
-    deleteNote: () => {
-      console.log('hello')
-    }
-  }
-}
 
-export const StatisticsContainer = connect(mapStateToProps, mapDispatchToProps)(StatisticsList)
+
+export const StatisticsContainer = connect(mapStateToProps, {})(StatisticsList)

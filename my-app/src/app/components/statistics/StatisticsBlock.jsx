@@ -1,8 +1,8 @@
 import Header from '../header/Header';
-import  StatisticsContainer  from './StatisticsContainer';
+import  { StatisticsContainer }  from './StatisticsContainer';
 const StatisticsBlock = (props) => {
   return (<div>
-    <Header tableType='statisticList'/>
+    <Header tableType='statistics'/>
     <StatisticsContainer/>
   </div>)
 }

@@ -1,5 +1,5 @@
 const EditIcon = (props) => {
-  return (<svg version="1.1" 
+  return (<svg onClick={() => props.toggleDisabled(props.noteId)} version="1.1" 
                 x="0px" y="0px"
                 viewBox="0 0 383.947 383.947">
                 <polygon points="0,303.947 0,383.947 80,383.947 316.053,147.893 236.053,67.893"/>
