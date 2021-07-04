@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
-import imagePaths from '../../constants';
-import { deleteNoteAC, toggleDisabledAC, updateInputTextAC } from '../../NoteListReducer';
+import { archiveNoteAC, deleteNoteAC, toggleDisabledAC, unArchiveNoteAC, updateInputTextAC } from '../../NoteListReducer';
 import NotesList from './NotesList';
 
 
@@ -18,7 +17,6 @@ let mapStateToProps = (state) => {
 
   return ({
     filteredListData: filteredListData,
-    images: imagePaths,
   })
 }
 
@@ -32,8 +30,14 @@ let mapDispatchToProps = (dispatch) => {
     },
     updateInputText: (editedValue, category, noteId) => {
       dispatch(updateInputTextAC(editedValue, category, noteId))
+    },
+    archiveNote: (noteId) => {
+      dispatch(archiveNoteAC(noteId))
+    },
+    unArchiveNote: (noteId) => {
+      dispatch(unArchiveNoteAC(noteId))
     }
   }
 }
 
-export const NoteContainer = connect(mapStateToProps, mapDispatchToProps)(NotesList)
+export const NoteListContainer = connect(mapStateToProps, mapDispatchToProps)(NotesList)

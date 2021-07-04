@@ -1,9 +1,9 @@
 
 
 const ARCHIVE_NOTE = 'ARCHIVE_NOTE';
+const UNARCHIVE_NOTE = 'UNARCHIVE_NOTE';
 const SHOW_ARCHIVE_NOTE = 'SHOW_ARCHIVE_NOTE';
 const HIDE_ARCHIVE_NOTE = 'HIDE_ARCHIVE_NOTE';
-const UNARCHIVE_NOTE = 'UNARCHIVE_NOTE';
 const DELETE_NOTE = 'DELETE_NOTE';
 const ADD_NOTE = 'ADD_NOTE';
 const TOGGLE_DISABLED = 'TOGGLE_DISABLED';
@@ -98,37 +98,27 @@ let initialState = {
 const NoteListReducer = (state = initialState, action) => {
   switch (action.type) {
     case ARCHIVE_NOTE: {
-      const notesList = state.listData.map((el) => {
+      return {...state, listData: state.listData.map((el) => {
         if (el.id === action.noteId) {
           return { ...el, isArchived: true };
         }
         return el;
-      });
-      state.listData = [...notesList];
-      
-      break;
+      })}
     }
     case UNARCHIVE_NOTE: {
-      const notesList = state.listData.map((el) => {
-        if (el.id === action.noteId) {
-          return { ...el, isArchived: false };
-        }
-        return el;
-      });
-      state.listData = [...notesList];
-      
-      break;
+     return {...state, listData: state.listData.map((el) => {
+      if (el.id === action.noteId) {
+        return { ...el, isArchived: false };
+      }
+      return el;
+      })}
     }
     
     case SHOW_ARCHIVE_NOTE: {
-      state.showArchived = true;
-      
-      break;
+      return {...state, showArchived: true}
     }
     case HIDE_ARCHIVE_NOTE: {
-      state.showArchived = false;
-      
-      break;
+      return {...state, showArchived: false}
     }
     case TOGGLE_DISABLED: {
       return {...state, listData: state.listData.map( listItem => {
@@ -140,8 +130,6 @@ const NoteListReducer = (state = initialState, action) => {
       })}
     }
     case UPDATE_INPUT_TEXT: {
-     
-
       return{...state, listData: state.listData.map((el) => {
         if (el.id === action.noteId) {
           if (action.category === 'schedule' && el.schedule.length <= 1) {
@@ -150,7 +138,12 @@ const NoteListReducer = (state = initialState, action) => {
             return {...el, schedule: action.editedValue}
           }
           if(action.category === 'category') {
-            
+            return { 
+                ...el, 
+                category: action.editedValue, 
+                // transform category name to camelCase with removing spaces 
+                type: (action.editedValue[0].toLowerCase() + action.editedValue.slice(1)).replace(' ', '')
+              }
           }
           return { ...el, [action.category]: action.editedValue };
         }
@@ -161,13 +154,26 @@ const NoteListReducer = (state = initialState, action) => {
       return {...state, listData: state.listData.filter((el) => el.id !== action.noteId)};
     }
     case ADD_NOTE: {
-      state = {
-        ...state,
-        lastId: state.lastId + 1,
-        listData: [...state.listData, action.newNote],
-      };
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const date = new Date();
+      const createData = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
       
-      break;
+      let newNote = {
+        id: state.lastId + 1,
+        name: 'Name',
+        createData: createData,
+        category: 'Random Thought',
+        content: '',
+        schedule: [],
+        isArchived: false,
+        type: 'randomThought',
+        isEditable: false,
+      }
+      return {
+        ...state,
+        lastId: newNote.id,
+        listData: [...state.listData, newNote],
+      };
     }
     default: {
       return state
@@ -175,41 +181,43 @@ const NoteListReducer = (state = initialState, action) => {
   }
 };
 /* 
-export const reRenderNotes = () => {
-  renderNoteList(state.listData, imagePaths);
-};
-
-export const getArchivedFlag = () => state.showArchived;
-
-export const unArchiveNote = (noteId) => {
-  editNoteReducer({ type: UNARCHIVE_NOTE, noteId });
-};
-
-export const archiveNote = (noteId) => {
-  editNoteReducer({ type: ARCHIVE_NOTE, noteId });
-};
-
 export const getLastId = () => state.lastId;
-
-export const getCategoriesList = () => state.categoriesList;
-
-export const getInitialValues = () => (state.listData);
  */
 
 export const deleteNoteAC = (noteId) => {
-  return {type: DELETE_NOTE, noteId: noteId}
+  return {type: DELETE_NOTE, noteId}
 } 
 
 export const toggleDisabledAC = (noteId) => {
-  return {type: TOGGLE_DISABLED, noteId: noteId}
+  return {type: TOGGLE_DISABLED, noteId}
 } 
 
 export const updateInputTextAC = (editedValue, category, noteId) => {
   return {type: UPDATE_INPUT_TEXT, 
-          noteId: noteId,
-          category: category,
-          editedValue: editedValue
+          noteId,
+          category,
+          editedValue
           }
+}
+
+export const archiveNoteAC = (noteId) => {
+  return {type: ARCHIVE_NOTE, noteId}
+}
+
+export const unArchiveNoteAC = (noteId) => {
+  return {type: UNARCHIVE_NOTE, noteId}
+}
+
+export const showArchivedAC = () => {
+  return {type: SHOW_ARCHIVE_NOTE}
+}
+
+export const hideArchivedAC = () => {
+  return {type: HIDE_ARCHIVE_NOTE}
+}
+
+export const addNoteAC = () => {
+  return {type: ADD_NOTE}
 }
 
 export default NoteListReducer

@@ -1,11 +1,15 @@
-const imagePaths = { 
-  task: '../../images/task.png',
-  randomThought: '../../images/thought.png',
-  idea: '../../images/idea.png',
-  quote: '../../images/quote.png',
-  archiveBtn: '../../images/archiveBtn.svg',
-  editBtn: '../../images/edit.svg',
-  deleteBtn: '../../images/delete.svg'
+import task from '../images/task.png';
+import randomThought from '../images/thought.png';
+import idea from '../images/idea.png';
+import quote from '../images/quote.png';
+
+export const imagePaths = { 
+  task,
+  randomThought,
+  idea,
+  quote,
 };
 
-export default imagePaths
+export default function getIcon(type) {
+  return imagePaths[type]
+}

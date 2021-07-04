@@ -9,8 +9,8 @@ body {
 }
 
 svg, img {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 .note__block {
@@ -23,7 +23,42 @@ svg, img {
   padding: 5px;
 }
 
+.archived {
+  background-color:rgb(226, 124, 124)
+}
 
+.listItem {
+  &__controls {
+    display: flex;
+    justify-content: flex-end;
+    & svg {
+      margin-right: 6px;
+    }
+  }
+}
+
+.notes__list {
+  height: 400px;
+  overflow: auto;
+}
+
+.UnArchive__icon {
+  width: 24px;
+  height: 20px;
+  &:hover {
+    & path:last-child {
+      fill: green;
+      cursor: pointer;
+    }
+  }
+}
+
+.archive__icon {
+  &:hover {
+    fill: red;
+    cursor: pointer;
+  }
+}
 
 .list__addBtn {
   padding: 10px;
@@ -57,18 +92,24 @@ svg, img {
   background-color: rgb(209, 209, 209);
 }
 
-.notes__header {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+.notes {
+  &__header {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+  }
+  &__block {
+    margin-bottom: 70px;
+  }
 }
 
 .header__listControls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
   & svg {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
+    margin-right: 6px;
   }
 }
 
@@ -160,9 +201,7 @@ svg, img {
   margin: 5px 0;
 }
 
-.archived {
-  background-color:rgb(226, 124, 124)
-}
+
 
 
 
@@ -199,12 +238,33 @@ svg, img {
   
 }
 
-.note__controls svg {a { 
-  border: 2px solid black;
-}
+.note__controls svg {
   width: 20px;
   padding: 0 7px;
   cursor: pointer;
+}
+
+.controls {
+  
+
+  &__addBtn {
+    padding: 5px;
+    margin-right: 10px;
+    &:hover {
+      color: #fff;
+      background-color: rgb(92, 91, 91);
+      cursor: pointer;
+    }
+  }
+
+  &__toggleArchivedBtn {
+    padding: 5px;
+    &:hover {
+      color: #fff;
+      background-color: rgb(92, 91, 91);
+      cursor: pointer;
+    }
+  }
 }
 
 .note__controls svg:hover {

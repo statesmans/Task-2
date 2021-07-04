@@ -1,55 +1,48 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import StatisticsList from './StatisticsList';
-import imagePaths from '../../constants';
 import ListItem from '../listItem/ListItem'
 
 
 let mapStateToProps = (state) => {
-  const getUniqCategories = () => {
-    // Get the all categories and filter for take only uniq categories
-    let categories = Array.from( new Set(state.listData.map(el => el.category)))
-    return categories
-  }
-  const computeCategories = () => {
-    let result = {}
-    let categories = getUniqCategories()
-    let archivedNoteCount = 0;
-    let activeNoteCount = 0;
-
-    categories.forEach((category) => {
-      state.listData.forEach((listEl) => {
-        if (listEl.category === category) {
-          if (listEl.isArchived) {
-            archivedNoteCount++;
-          } else {
-            activeNoteCount++;
-          }
+  const computeCategoryStatus = () => {
+    const result = state.listData.reduce((acc, curr) => {
+      
+      if (acc[curr.category] === undefined) {
+        acc[curr.category] = {
+          active: 0,
+          archive: 0
         }
-      })
-      result[category] = {
-        active: activeNoteCount,
-        archive: archivedNoteCount
       }
-      activeNoteCount = 0;
-      archivedNoteCount = 0;
-    })
+
+      if (curr.isArchived === true) {
+        acc[curr.category] = {
+          ...acc[curr.category], 
+          archive: acc[curr.category].archive + 1
+        }
+      } else if(curr.isArchived === false){
+        acc[curr.category] = {
+          ...acc[curr.category], 
+          active: acc[curr.category].active + 1
+        }
+      } 
+      return acc
+    }, {})
     return result
   }
 
-
   const generateCategoriesList = () => {
-    const computedCategories = computeCategories();
+    const computedCategories = computeCategoryStatus();
     let categoriesList = [];
     let count = 0;
     for (let category in computedCategories) {
         categoriesList.push(<ListItem listType='categories'
                                     active={computedCategories[category].active}
                                     archive={computedCategories[category].archive}
-                                    type={category}
+                                    type={state.listData.filter(el => el.category === category)[0].type}
                                     name={category}
-                                    images={imagePaths}
-                                    key={count}/>)
+                                    key={count}/>
+                                    )
       count++
     }
     return categoriesList
@@ -57,7 +50,7 @@ let mapStateToProps = (state) => {
 
   return ({
     statisticList: generateCategoriesList(),
-    images: imagePaths
+
   })
 }
 

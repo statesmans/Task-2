@@ -3,7 +3,6 @@ import ArchiveIcon from '../icons/ArchiveIcon';
 import DeleteIcon from '../icons/DeleteIcon';
 
 const ListHeader = (props) => {
-  console.log(props.tableType)
   return (
     <div>
       { props.tableType === 'notes' ? <div className={s.table__header}>

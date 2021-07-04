@@ -3,51 +3,49 @@ import s from '../Main.module.scss';
 import EditIcon from '../icons/EditIcon';
 import DeleteIcon from '../icons/DeleteIcon';
 import ArchiveIcon from '../icons/ArchiveIcon'
-
+import UnArchiveIcon from '../icons/UnArchiveIcon';
+import getIcon from '../../constants'
 const ListItem = (props) => {
   let noteNameInput = React.createRef();
   let createDataInput = React.createRef();
   let categoryInput = React.createRef();
   let contentInput = React.createRef();
   let scheduleInput = React.createRef();
-  
+  let icon = getIcon(props.type);
+
   useEffect(() => {
     if(props.listType === 'notes') {
-      noteNameInput.current.value = props.name
-      createDataInput.current.value = props.createData
-      categoryInput.current.value = props.category
-      contentInput.current.value = props.content
+      noteNameInput.current.value = props.name;
+      createDataInput.current.value = props.createData;
+      categoryInput.current.value = props.category;
+      contentInput.current.value = props.content;
       if(scheduleInput.current) {
-        console.log(scheduleInput)
-        scheduleInput.current.value = props.schedule
+        scheduleInput.current.value = props.schedule;
       }
     }
   });
- 
 
-  let itemClass = '';
+  let itemClasses = '';
   if (props.listType === 'categories') {
-    itemClass = s.category__item
-  } else {
-    itemClass = s.note__item
+    itemClasses = s.category__item;
+  } else if(props.listType === 'notes'){
+    itemClasses = s.note__item;
   }
-
   
 
   function updateText(e, inputCategory, ref) {
     if (e.keyCode === 13) {
-        props.toggleDisabled(props.id)
-        props.updateInputText(ref.current.value, inputCategory, props.id)
+        props.toggleDisabled(props.id);
+        props.updateInputText(ref.current.value, inputCategory, props.id);
     } else if(!e.keyCode) { 
-      props.updateInputText(ref.current.value, inputCategory, props.id)
+      props.updateInputText(ref.current.value, inputCategory, props.id);
     }
   }
 
-
   return (
-    <div className={ itemClass + ' ' + s.list__item }>
+    <div className={props.isArchived === true ? `${s.archived} ${s.list__item} ${itemClasses}` : `${s.list__item} ${itemClasses}` }>
       <div className={ s.item__name }>
-        <img src='../../images/archive .svg' alt={ props.category }/>
+        <img src={icon} alt={ props.category }/>
         { props.listType === 'categories' ? <p className={s.itemNameText}>{props.name}</p>
                                           : <input className={s.note__text + ' ' + s.itemNameInput } ref={noteNameInput} onKeyUp={(e) => updateText(e, 'name', noteNameInput)} type="text" disabled={props.disabled}/>}
       </div>
@@ -82,15 +80,16 @@ const ListItem = (props) => {
         </React.Fragment>  
         : null
       }
-
-      { props.listType === 'notes' ? 
-        <div className={s.notes__controls}>
-          <EditIcon toggleDisabled={props.toggleDisabled} noteId={props.id}/>
-          <ArchiveIcon/>
-          <DeleteIcon deleteNote={props.deleteNote} noteId={props.id}/>
-        </div>
-        : null
-      }
+      <div className={s.listItem__controls}>
+        {props.listType === 'notes' ? 
+          <div className={s.notes__controls}>
+            <EditIcon toggleDisabled={props.toggleDisabled} noteId={props.id}/>
+            {props.isArchived ? <UnArchiveIcon unArchiveNote={props.unArchiveNote} id={props.id}/>: <ArchiveIcon archiveNote={props.archiveNote} id={props.id}/>}
+            <DeleteIcon deleteNote={props.deleteNote} noteId={props.id}/>
+          </div>
+          : null
+        }
+      </div>
     </div>
   )
 }
